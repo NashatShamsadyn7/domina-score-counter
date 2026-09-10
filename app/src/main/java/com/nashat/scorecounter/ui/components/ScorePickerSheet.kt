@@ -25,7 +25,6 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.nashat.scorecounter.ui.theme.LocalDominaColors
 import com.nashat.scorecounter.ui.theme.PresetAmber
 import com.nashat.scorecounter.ui.theme.PresetGreen
 
@@ -39,7 +38,6 @@ fun ScorePickerSheet(
     onPick: (Int) -> Unit,
     onCustom: () -> Unit
 ) {
-    val colors = LocalDominaColors.current
     val values = listOf(5, 10, 15, 20, 25, 30)
     val haptic = LocalHapticFeedback.current
     ModalBottomSheet(onDismissRequest = onDismiss) {
@@ -61,12 +59,11 @@ fun ScorePickerSheet(
                         },
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (value <= 15) PresetGreen else PresetAmber,
-                            contentColor = Color.White
+                            containerColor = if (value <= 15) PresetGreen else PresetAmber
                         ),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(text = value.toString())
+                        Text(text = value.toString(), color = Color.White)
                     }
                 }
             }
@@ -90,10 +87,7 @@ fun ScorePickerSheet(
                     .fillMaxWidth()
                     .padding(vertical = 20.dp),
                 shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colors.sheetCancelContainer,
-                    contentColor = colors.sheetCancelContent
-                )
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEAECF8), contentColor = Color(0xFF474B67))
             ) {
                 Text(cancelLabel)
             }

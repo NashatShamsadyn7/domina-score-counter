@@ -23,7 +23,6 @@ class SettingsDataStore(private val context: Context) {
         val vibration = booleanPreferencesKey("vibration")
         val animation = booleanPreferencesKey("animation")
         val celebration = booleanPreferencesKey("celebration")
-        val voice = booleanPreferencesKey("voice")
         val fontSize = intPreferencesKey("font_size")
         val language = stringPreferencesKey("language")
     }
@@ -35,7 +34,6 @@ class SettingsDataStore(private val context: Context) {
             vibrationEnabled = preferences[Keys.vibration] ?: true,
             animationEnabled = preferences[Keys.animation] ?: true,
             celebrationEnabled = preferences[Keys.celebration] ?: true,
-            voiceEnabled = preferences[Keys.voice] ?: true,
             fontSize = (preferences[Keys.fontSize] ?: 16).coerceIn(4, 40),
             language = preferences[Keys.language]?.let { AppLanguage.valueOf(it) } ?: AppLanguage.KURDISH
         )
@@ -59,10 +57,6 @@ class SettingsDataStore(private val context: Context) {
 
     suspend fun updateCelebration(enabled: Boolean) {
         update { it[Keys.celebration] = enabled }
-    }
-
-    suspend fun updateVoice(enabled: Boolean) {
-        update { it[Keys.voice] = enabled }
     }
 
     suspend fun updateFontSize(size: Int) {

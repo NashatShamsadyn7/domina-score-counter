@@ -5,26 +5,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.nashat.scorecounter.model.PlayerState
 import com.nashat.scorecounter.ui.components.ScoreCard
-import com.nashat.scorecounter.ui.theme.LocalDarkTheme
-import com.nashat.scorecounter.ui.theme.LocalDominaColors
 import com.nashat.scorecounter.ui.theme.MinusRed
-import com.nashat.scorecounter.ui.theme.MinusRedDark
-import com.nashat.scorecounter.ui.theme.PlusGreen
-import com.nashat.scorecounter.ui.theme.PlusGreenDark
 import com.nashat.scorecounter.ui.theme.ScoreAmber
-import com.nashat.scorecounter.ui.theme.ScoreAmberDark
 import com.nashat.scorecounter.ui.theme.ScoreGreen
-import com.nashat.scorecounter.ui.theme.ScoreGreenDark
 import com.nashat.scorecounter.ui.theme.ScorePurple
-import com.nashat.scorecounter.ui.theme.ScorePurpleDark
 
 @Composable
 fun ThreePlayerScreen(
@@ -43,10 +32,6 @@ fun ThreePlayerScreen(
     onRedoClick: (Int) -> Unit
 ) {
     if (players.size >= 3) {
-        val colors = LocalDominaColors.current
-        val darkTheme = LocalDarkTheme.current
-        val minusColor = if (darkTheme) MinusRedDark else MinusRed
-        val plusColor = if (darkTheme) PlusGreenDark else PlusGreen
         val spacing = if (compactLayout) 10.dp else 16.dp
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(spacing)) {
             Row(
@@ -57,9 +42,9 @@ fun ThreePlayerScreen(
             ) {
                 ScoreCard(
                     player = players[0],
-                    scoreColor = if (darkTheme) ScorePurpleDark else ScorePurple,
-                    minusColor = minusColor,
-                    plusColor = plusColor,
+                    scoreColor = ScorePurple,
+                    minusColor = MinusRed,
+                    hintText = hintText,
                     pointsLabel = pointsLabel,
                     appFontSize = appFontSize,
                     animationEnabled = animationEnabled,
@@ -76,9 +61,9 @@ fun ThreePlayerScreen(
                 )
                 ScoreCard(
                     player = players[1],
-                    scoreColor = if (darkTheme) ScoreAmberDark else ScoreAmber,
-                    minusColor = minusColor,
-                    plusColor = plusColor,
+                    scoreColor = ScoreAmber,
+                    minusColor = MinusRed,
+                    hintText = hintText,
                     pointsLabel = pointsLabel,
                     appFontSize = appFontSize,
                     animationEnabled = animationEnabled,
@@ -96,9 +81,9 @@ fun ThreePlayerScreen(
             }
             ScoreCard(
                 player = players[2],
-                scoreColor = if (darkTheme) ScoreGreenDark else ScoreGreen,
-                minusColor = minusColor,
-                plusColor = plusColor,
+                scoreColor = ScoreGreen,
+                minusColor = MinusRed,
+                hintText = hintText,
                 pointsLabel = pointsLabel,
                 appFontSize = appFontSize,
                 animationEnabled = animationEnabled,
@@ -110,13 +95,6 @@ fun ThreePlayerScreen(
                 onSubtractClick = { onSubtractClick(players[2].id) },
                 onUndoClick = { onUndoClick(players[2].id) },
                 onRedoClick = { onRedoClick(players[2].id) }
-            )
-            Text(
-                text = hintText,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium,
-                color = colors.textSecondary,
-                modifier = Modifier.fillMaxWidth()
             )
         }
     }

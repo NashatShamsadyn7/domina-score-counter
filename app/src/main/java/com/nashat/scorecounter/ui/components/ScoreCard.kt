@@ -1,5 +1,6 @@
 package com.nashat.scorecounter.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
@@ -67,7 +68,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nashat.scorecounter.model.PlayerState
-import com.nashat.scorecounter.ui.theme.LocalDominaColors
+import com.nashat.scorecounter.ui.theme.CardBorder
+import com.nashat.scorecounter.ui.theme.CardSurface
 import kotlinx.coroutines.launch
 
 @Composable
@@ -75,7 +77,7 @@ fun ScoreCard(
     player: PlayerState,
     scoreColor: Color,
     minusColor: Color,
-    plusColor: Color,
+    hintText: String,
     pointsLabel: String,
     appFontSize: Int,
     animationEnabled: Boolean,
@@ -88,7 +90,6 @@ fun ScoreCard(
     onUndoClick: () -> Unit,
     onRedoClick: () -> Unit
 ) {
-    val colors = LocalDominaColors.current
     val contentPadding = if (compactLayout) 10.dp else 16.dp
     val spacing = if (compactLayout) 8.dp else 16.dp
     val buttonHeight = if (compactLayout) 46.dp else 58.dp
@@ -105,8 +106,6 @@ fun ScoreCard(
     val coroutineScope = rememberCoroutineScope()
     var isNameFocused by remember(player.id) { mutableStateOf(false) }
     val flipRotation = remember(player.id) { Animatable(0f) }
-    val undoEnabled = player.undoStack.isNotEmpty()
-    val redoEnabled = player.redoStack.isNotEmpty()
     val cardLift by animateFloatAsState(
         targetValue = when {
             animationEnabled && isNameFocused -> 1.02f
@@ -152,8 +151,8 @@ fun ScoreCard(
             .shadow(if (compactLayout) 8.dp else 14.dp, RoundedCornerShape(20.dp), spotColor = scoreColor.copy(alpha = 0.22f))
             .scale(cardLift),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = colors.cardSurface),
-        border = BorderStroke(2.dp, colors.cardBorder),
+        colors = CardDefaults.cardColors(containerColor = CardSurface),
+        border = BorderStroke(2.dp, CardBorder),
         elevation = CardDefaults.cardElevation(defaultElevation = if (compactLayout) 4.dp else 8.dp)
     ) {
         Column(
@@ -161,7 +160,7 @@ fun ScoreCard(
                 .fillMaxSize()
                 .background(
                     brush = Brush.verticalGradient(
-                        listOf(colors.cardTop, colors.cardSurface, colors.cardBottom)
+                        listOf(Color.White, Color(0xFFF7F8FF), Color(0xFFEEF2FF))
                     )
                 )
                 .padding(contentPadding),
@@ -180,10 +179,7 @@ fun ScoreCard(
                     .onFocusChanged { isNameFocused = it.isFocused },
                 shape = RoundedCornerShape(14.dp),
                 singleLine = true,
-                textStyle = MaterialTheme.typography.bodyLarge.copy(
-                    textAlign = TextAlign.Center,
-                    color = colors.textPrimary
-                ),
+                textStyle = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
                     imeAction = ImeAction.Done
@@ -205,12 +201,9 @@ fun ScoreCard(
                 ),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = scoreColor.copy(alpha = 0.9f),
-                    unfocusedBorderColor = colors.cardBorder,
-                    focusedContainerColor = colors.cardSurface,
-                    unfocusedContainerColor = colors.cardSurface,
-                    focusedTextColor = colors.textPrimary,
-                    unfocusedTextColor = colors.textPrimary,
-                    cursorColor = scoreColor
+                    unfocusedBorderColor = CardBorder,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
                 )
             )
 
@@ -223,7 +216,7 @@ fun ScoreCard(
                     .shadow(6.dp, RoundedCornerShape(18.dp), spotColor = scoreColor.copy(alpha = 0.16f))
                     .background(
                         Brush.verticalGradient(
-                            listOf(colors.cardTop, scoreColor.copy(alpha = 0.06f), colors.cardBottom)
+                            listOf(Color.White, scoreColor.copy(alpha = 0.05f), Color.White)
                         ),
                         RoundedCornerShape(18.dp)
                     )
@@ -242,7 +235,7 @@ fun ScoreCard(
                 Card(
                     modifier = Modifier.fillMaxSize(),
                     shape = RoundedCornerShape(18.dp),
-                    border = BorderStroke(2.dp, colors.cardBorder),
+                    border = BorderStroke(2.dp, CardBorder),
                     colors = CardDefaults.cardColors(containerColor = Color.Transparent)
                 ) {}
                 Canvas(modifier = Modifier.fillMaxSize()) {
@@ -299,7 +292,7 @@ fun ScoreCard(
                 PressableActionButton(
                     modifier = Modifier.weight(1f),
                     buttonHeight = buttonHeight,
-                    color = plusColor,
+                    color = com.nashat.scorecounter.ui.theme.PlusGreen,
                     animationEnabled = animationEnabled,
                     onClick = onAddClick,
                     icon = { Icon(Icons.Rounded.Add, contentDescription = null, tint = Color.White) }
@@ -316,6 +309,15 @@ fun ScoreCard(
 
             Spacer(modifier = Modifier.height(if (compactLayout) 6.dp else 10.dp))
 
+            Text(
+                text = hintText,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+            )
+
+            Spacer(modifier = Modifier.height(if (compactLayout) 6.dp else 10.dp))
+
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.fillMaxWidth(),
@@ -324,36 +326,16 @@ fun ScoreCard(
                 SmallIconAction(
                     modifier = Modifier.weight(1f),
                     compactLayout = compactLayout,
-                    enabled = undoEnabled,
-                    enabledContainer = colors.undoEnabled,
-                    disabledContainer = colors.undoDisabled,
-                    disabledTint = colors.textSecondary.copy(alpha = 0.6f),
-                    contentDescription = "Undo",
+                    enabled = player.undoStack.isNotEmpty(),
                     onClick = onUndoClick,
-                    icon = {
-                        Icon(
-                            Icons.AutoMirrored.Rounded.Undo,
-                            contentDescription = "Undo",
-                            tint = if (undoEnabled) Color.White else colors.textSecondary.copy(alpha = 0.6f)
-                        )
-                    }
+                    icon = { Icon(Icons.AutoMirrored.Rounded.Undo, contentDescription = null) }
                 )
                 SmallIconAction(
                     modifier = Modifier.weight(1f),
                     compactLayout = compactLayout,
-                    enabled = redoEnabled,
-                    enabledContainer = colors.undoEnabled,
-                    disabledContainer = colors.undoDisabled,
-                    disabledTint = colors.textSecondary.copy(alpha = 0.6f),
-                    contentDescription = "Redo",
+                    enabled = player.redoStack.isNotEmpty(),
                     onClick = onRedoClick,
-                    icon = {
-                        Icon(
-                            Icons.AutoMirrored.Rounded.Redo,
-                            contentDescription = "Redo",
-                            tint = if (redoEnabled) Color.White else colors.textSecondary.copy(alpha = 0.6f)
-                        )
-                    }
+                    icon = { Icon(Icons.AutoMirrored.Rounded.Redo, contentDescription = null) }
                 )
             }
         }
@@ -398,10 +380,6 @@ private fun SmallIconAction(
     modifier: Modifier = Modifier,
     compactLayout: Boolean,
     enabled: Boolean,
-    enabledContainer: Color,
-    disabledContainer: Color,
-    disabledTint: Color,
-    contentDescription: String,
     onClick: () -> Unit,
     icon: @Composable () -> Unit
 ) {
@@ -410,7 +388,7 @@ private fun SmallIconAction(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (enabled) enabledContainer else disabledContainer
+            containerColor = if (enabled) Color(0xFF50C8D7) else Color(0xFFE4E8F7)
         )
     ) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -420,7 +398,7 @@ private fun SmallIconAction(
                     onClick()
                 },
                 enabled = enabled,
-                modifier = Modifier.size(if (compactLayout) 44.dp else 48.dp)
+                modifier = Modifier.size(if (compactLayout) 36.dp else 46.dp)
             ) {
                 icon()
             }

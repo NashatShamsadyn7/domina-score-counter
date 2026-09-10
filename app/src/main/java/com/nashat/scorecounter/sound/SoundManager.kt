@@ -4,7 +4,6 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.SoundPool
 import com.nashat.scorecounter.R
-import java.util.Collections
 
 class SoundManager(context: Context) {
 
@@ -18,101 +17,83 @@ class SoundManager(context: Context) {
         )
         .build()
 
-    // Sounds that finished decoding. Playing an id before it is loaded is a
-    // silent no-op, so we track completion to avoid broken first taps.
-    private val loadedSoundIds: MutableSet<Int> = Collections.synchronizedSet(HashSet())
-
-    init {
-        soundPool.setOnLoadCompleteListener { _, sampleId, status ->
-            if (status == 0) {
-                loadedSoundIds.add(sampleId)
-            }
-        }
-    }
-
-    private fun load(context: Context, resId: Int): Int = soundPool.load(context, resId, 1)
-
-    private val addSoundId = load(context, R.raw.add_generic)
-    private val subtractSoundId = load(context, R.raw.subtract_generic)
+    private val addSoundId = soundPool.load(context, R.raw.add_generic, 1)
+    private val subtractSoundId = soundPool.load(context, R.raw.subtract_generic, 1)
     private val addValueSounds = mapOf(
         0 to mapOf(
-            5 to load(context, R.raw.team1_add_5),
-            10 to load(context, R.raw.team1_add_10),
-            15 to load(context, R.raw.team1_add_15),
-            20 to load(context, R.raw.team1_add_20),
-            25 to load(context, R.raw.team1_add_25),
-            30 to load(context, R.raw.team1_add_30)
+            5 to soundPool.load(context, R.raw.team1_add_5, 1),
+            10 to soundPool.load(context, R.raw.team1_add_10, 1),
+            15 to soundPool.load(context, R.raw.team1_add_15, 1),
+            20 to soundPool.load(context, R.raw.team1_add_20, 1),
+            25 to soundPool.load(context, R.raw.team1_add_25, 1),
+            30 to soundPool.load(context, R.raw.team1_add_30, 1)
         ),
         1 to mapOf(
-            5 to load(context, R.raw.team2_add_5),
-            10 to load(context, R.raw.team2_add_10),
-            15 to load(context, R.raw.team2_add_15),
-            20 to load(context, R.raw.team2_add_20),
-            25 to load(context, R.raw.team2_add_25),
-            30 to load(context, R.raw.team2_add_30)
+            5 to soundPool.load(context, R.raw.team2_add_5, 1),
+            10 to soundPool.load(context, R.raw.team2_add_10, 1),
+            15 to soundPool.load(context, R.raw.team2_add_15, 1),
+            20 to soundPool.load(context, R.raw.team2_add_20, 1),
+            25 to soundPool.load(context, R.raw.team2_add_25, 1),
+            30 to soundPool.load(context, R.raw.team2_add_30, 1)
         ),
         2 to mapOf(
-            5 to load(context, R.raw.team3_add_5),
-            10 to load(context, R.raw.team3_add_10),
-            15 to load(context, R.raw.team3_add_15),
-            20 to load(context, R.raw.team3_add_20),
-            25 to load(context, R.raw.team3_add_25),
-            30 to load(context, R.raw.team3_add_30)
+            5 to soundPool.load(context, R.raw.team3_add_5, 1),
+            10 to soundPool.load(context, R.raw.team3_add_10, 1),
+            15 to soundPool.load(context, R.raw.team3_add_15, 1),
+            20 to soundPool.load(context, R.raw.team3_add_20, 1),
+            25 to soundPool.load(context, R.raw.team3_add_25, 1),
+            30 to soundPool.load(context, R.raw.team3_add_30, 1)
         ),
         3 to mapOf(
-            5 to load(context, R.raw.team4_add_5),
-            10 to load(context, R.raw.team4_add_10),
-            15 to load(context, R.raw.team4_add_15),
-            20 to load(context, R.raw.team4_add_20),
-            25 to load(context, R.raw.team4_add_25),
-            30 to load(context, R.raw.team4_add_30)
+            5 to soundPool.load(context, R.raw.team4_add_5, 1),
+            10 to soundPool.load(context, R.raw.team4_add_10, 1),
+            15 to soundPool.load(context, R.raw.team4_add_15, 1),
+            20 to soundPool.load(context, R.raw.team4_add_20, 1),
+            25 to soundPool.load(context, R.raw.team4_add_25, 1),
+            30 to soundPool.load(context, R.raw.team4_add_30, 1)
         )
     )
     private val subtractSounds = mapOf(
-        0 to load(context, R.raw.team1_subtract),
-        1 to load(context, R.raw.team2_subtract),
-        2 to load(context, R.raw.team3_subtract),
-        3 to load(context, R.raw.team4_subtract)
+        0 to soundPool.load(context, R.raw.team1_subtract, 1),
+        1 to soundPool.load(context, R.raw.team2_subtract, 1),
+        2 to soundPool.load(context, R.raw.team3_subtract, 1),
+        3 to soundPool.load(context, R.raw.team4_subtract, 1)
     )
     private val milestoneSounds = mapOf(
-        50 to load(context, R.raw.score_50),
-        100 to load(context, R.raw.score_100),
-        150 to load(context, R.raw.score_150),
-        200 to load(context, R.raw.score_200),
-        250 to load(context, R.raw.score_250),
-        300 to load(context, R.raw.score_300),
-        350 to load(context, R.raw.score_350),
-        400 to load(context, R.raw.score_400),
-        450 to load(context, R.raw.score_450),
-        500 to load(context, R.raw.score_500),
-        550 to load(context, R.raw.score_550)
+        50 to soundPool.load(context, R.raw.score_50, 1),
+        100 to soundPool.load(context, R.raw.score_100, 1),
+        150 to soundPool.load(context, R.raw.score_150, 1),
+        200 to soundPool.load(context, R.raw.score_200, 1),
+        250 to soundPool.load(context, R.raw.score_250, 1),
+        300 to soundPool.load(context, R.raw.score_300, 1),
+        350 to soundPool.load(context, R.raw.score_350, 1),
+        400 to soundPool.load(context, R.raw.score_400, 1),
+        450 to soundPool.load(context, R.raw.score_450, 1),
+        500 to soundPool.load(context, R.raw.score_500, 1),
+        550 to soundPool.load(context, R.raw.score_550, 1)
     )
 
     fun playAdd(playerId: Int, value: Int, enabled: Boolean) {
         if (!enabled) return
         val soundId = addValueSounds[playerId]?.get(value) ?: addSoundId
-        play(soundId, panLeft(playerId), panRight(playerId))
+        val left = if (playerId % 2 == 0) 1f else 0.82f
+        val right = if (playerId % 2 == 1) 1f else 0.82f
+        soundPool.play(soundId, left, right, 1, 0, 1f)
     }
 
     fun playSubtract(playerId: Int, enabled: Boolean) {
         if (!enabled) return
         val soundId = subtractSounds[playerId] ?: subtractSoundId
-        play(soundId, panLeft(playerId), panRight(playerId), rate = 0.94f)
+        val left = if (playerId % 2 == 0) 1f else 0.8f
+        val right = if (playerId % 2 == 1) 1f else 0.8f
+        soundPool.play(soundId, left, right, 1, 0, 0.94f)
     }
 
     fun playMilestone(score: Int, enabled: Boolean): Boolean {
         val soundId = milestoneSounds[score] ?: return false
-        if (enabled) play(soundId, 1f, 1f, priority = 2)
+        if (enabled) soundPool.play(soundId, 1f, 1f, 2, 0, 1f)
         return true
     }
-
-    private fun play(soundId: Int, left: Float, right: Float, priority: Int = 1, rate: Float = 1f) {
-        if (soundId !in loadedSoundIds) return
-        soundPool.play(soundId, left, right, priority, 0, rate)
-    }
-
-    private fun panLeft(playerId: Int): Float = if (playerId % 2 == 0) 1f else 0.82f
-    private fun panRight(playerId: Int): Float = if (playerId % 2 == 1) 1f else 0.82f
 
     fun release() {
         soundPool.release()

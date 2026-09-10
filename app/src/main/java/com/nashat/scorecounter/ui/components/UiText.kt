@@ -31,10 +31,7 @@ data class UiText(
     val system: String,
     val kurdish: String,
     val arabic: String,
-    val english: String,
-    val voice: String,
-    val modeSwitchTitle: String,
-    val modeSwitchBody: String
+    val english: String
 )
 
 fun uiText(language: AppLanguage): UiText = when (language) {
@@ -66,10 +63,7 @@ fun uiText(language: AppLanguage): UiText = when (language) {
         system = "سیستەم",
         kurdish = "کوردی",
         arabic = "عەرەبی",
-        english = "English",
-        voice = "خوێندنەوەی خاڵەکان بە دەنگ",
-        modeSwitchTitle = "یارییەکی نوێ دەست پێ بکەیت؟",
-        modeSwitchBody = "گۆڕینی شێوازی یاری هەموو خاڵەکان دەگەڕێنێتەوە سفر."
+        english = "English"
     )
 
     AppLanguage.ARABIC -> UiText(
@@ -100,10 +94,7 @@ fun uiText(language: AppLanguage): UiText = when (language) {
         system = "النظام",
         kurdish = "الكردية",
         arabic = "العربية",
-        english = "English",
-        voice = "قراءة النقاط صوتيًا",
-        modeSwitchTitle = "بدء لعبة جديدة؟",
-        modeSwitchBody = "سيؤدي تغيير نمط اللعب إلى تصفير جميع النقاط."
+        english = "English"
     )
 
     AppLanguage.ENGLISH -> UiText(
@@ -134,10 +125,7 @@ fun uiText(language: AppLanguage): UiText = when (language) {
         system = "System",
         kurdish = "Kurdish",
         arabic = "Arabic",
-        english = "English",
-        voice = "Voice Announcements",
-        modeSwitchTitle = "Start a new game?",
-        modeSwitchBody = "Switching the game mode will reset all scores."
+        english = "English"
     )
 }
 

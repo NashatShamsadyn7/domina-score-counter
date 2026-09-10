@@ -1,5 +1,8 @@
 package com.nashat.scorecounter.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,11 +30,12 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.nashat.scorecounter.model.AppLanguage
 import com.nashat.scorecounter.model.AppSettings
 import com.nashat.scorecounter.model.ThemeMode
-import com.nashat.scorecounter.ui.theme.LocalDominaColors
+import com.nashat.scorecounter.ui.theme.CardBorder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,7 +48,6 @@ fun SettingsSheet(
     onVibrationChanged: (Boolean) -> Unit,
     onAnimationChanged: (Boolean) -> Unit,
     onCelebrationChanged: (Boolean) -> Unit,
-    onVoiceChanged: (Boolean) -> Unit,
     onFontSizeChanged: (Int) -> Unit,
     onLanguageSelected: (AppLanguage) -> Unit
 ) {
@@ -76,7 +79,6 @@ fun SettingsSheet(
             SectionCard {
                 SettingToggleRow(text.sound, settings.soundEnabled, onSoundChanged)
                 SettingToggleRow(text.vibration, settings.vibrationEnabled, onVibrationChanged)
-                SettingToggleRow(text.voice, settings.voiceEnabled, onVoiceChanged)
                 SettingToggleRow(text.animation, settings.animationEnabled, onAnimationChanged)
                 SettingToggleRow(text.celebration, settings.celebrationEnabled, onCelebrationChanged)
                 FontSizeRow(text.fontSize, settings.fontSize, onFontSizeChanged)
@@ -120,23 +122,22 @@ private fun FontSizeRow(label: String, value: Int, onValueChange: (Int) -> Unit)
             Text(value.toString(), color = MaterialTheme.colorScheme.primary)
         }
         Slider(
-            value = value.toFloat().coerceIn(12f, 32f),
-            onValueChange = { onValueChange(it.toInt().coerceIn(12, 32)) },
+            value = value.toFloat(),
+            onValueChange = { onValueChange(it.toInt().coerceIn(4, 40)) },
             onValueChangeFinished = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
             },
-            valueRange = 12f..32f
+            valueRange = 4f..40f
         )
     }
 }
 
 @Composable
 private fun SectionCard(content: @Composable ColumnScope.() -> Unit) {
-    val colors = LocalDominaColors.current
     Card(
         shape = RoundedCornerShape(22.dp),
-        border = BorderStroke(1.dp, colors.cardBorder.copy(alpha = 0.45f)),
-        colors = CardDefaults.cardColors(containerColor = colors.cardSurface)
+        border = BorderStroke(1.dp, CardBorder.copy(alpha = 0.45f)),
+        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.96f))
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -149,25 +150,39 @@ private fun SectionCard(content: @Composable ColumnScope.() -> Unit) {
 @Composable
 private fun SettingToggleRow(label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
     val haptic = LocalHapticFeedback.current
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                onCheckedChange(!checked)
-            }
-            .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(label)
-        Switch(
-            checked = checked,
-            onCheckedChange = {
-                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                onCheckedChange(it)
-            }
-        )
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onCheckedChange(!checked)
+                }
+                .padding(vertical = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(label)
+            Switch(
+                checked = checked,
+                onCheckedChange = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onCheckedChange(it)
+                }
+            )
+        }
+        AnimatedVisibility(
+            visible = checked,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(top = 2.dp)
+            )
+        }
     }
 }
 

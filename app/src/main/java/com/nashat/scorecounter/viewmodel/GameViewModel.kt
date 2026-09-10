@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -35,14 +34,17 @@ class GameViewModel(
 
     init {
         viewModelScope.launch {
-            val savedState = gameRepository.observeGameState().first()
-            if (savedState != null) {
-                gameState.value = GameUiState(
-                    gameMode = savedState.gameMode,
-                    players = savedState.players
-                )
+            gameRepository.observeGameState().collect { savedState ->
+                if (!hasLoadedSavedState) {
+                    hasLoadedSavedState = true
+                    if (savedState != null) {
+                        gameState.value = GameUiState(
+                            gameMode = savedState.gameMode,
+                            players = savedState.players
+                        )
+                    }
+                }
             }
-            hasLoadedSavedState = true
         }
 
         viewModelScope.launch {
@@ -88,22 +90,18 @@ class GameViewModel(
         }
     }
 
-    fun changeScore(playerId: Int, delta: Int): Int {
-        var effectiveDelta = 0
+    fun changeScore(playerId: Int, delta: Int) {
         gameState.update { state ->
             state.copy(players = state.players.map { player ->
                 if (player.id == playerId) {
-                    val newScore = (player.score + delta).coerceAtLeast(0)
-                    effectiveDelta = newScore - player.score
                     player.copy(
-                        score = newScore,
-                        undoStack = player.undoStack + effectiveDelta,
+                        score = player.score + delta,
+                        undoStack = player.undoStack + delta,
                         redoStack = emptyList()
                     )
                 } else player
             })
         }
-        return effectiveDelta
     }
 
     fun undo(playerId: Int) {
@@ -154,10 +152,6 @@ class GameViewModel(
 
     fun setSound(enabled: Boolean) {
         viewModelScope.launch { settingsDataStore.updateSound(enabled) }
-    }
-
-    fun setVoice(enabled: Boolean) {
-        viewModelScope.launch { settingsDataStore.updateVoice(enabled) }
     }
 
     fun setVibration(enabled: Boolean) {

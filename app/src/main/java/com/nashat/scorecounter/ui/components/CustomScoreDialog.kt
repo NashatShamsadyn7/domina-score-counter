@@ -34,7 +34,7 @@ fun CustomScoreDialog(
             OutlinedTextField(
                 value = value,
                 onValueChange = {
-                    value = it.filter { char -> char.isDigit() }.take(4)
+                    value = it.filter { char -> char.isDigit() }
                     isError = false
                 },
                 label = { Text(inputLabel) },
@@ -46,11 +46,7 @@ fun CustomScoreDialog(
             TextButton(onClick = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 val parsed = value.toIntOrNull()
-                if (parsed != null && parsed in 1..999) {
-                    onConfirm(parsed)
-                } else {
-                    isError = true
-                }
+                if (parsed != null) onConfirm(parsed) else isError = true
             }) {
                 Text(confirmLabel)
             }

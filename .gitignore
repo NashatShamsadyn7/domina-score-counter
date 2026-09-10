@@ -1,10 +1,61 @@
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
+*.dex
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+release/
+
+# Gradle
 .gradle/
 build/
-.idea/
-*.iml
+
+# Local configuration (sdk path, etc)
 local.properties
-apk/
-*.apk
+
+# Bundled SDK — machine-specific, never commit
+android-sdk/
+
+# Keystore files — NEVER commit these
 *.jks
 *.keystore
+keystore.properties
+
+# Secrets
+.env
+.env.*
+secrets.properties
+
+# Native build folders
+.externalNativeBuild
+.cxx/
+
+# IntelliJ / Android Studio
+*.iml
+.idea/
+captures/
+.navigation/
+
+# Lint
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
+
+# Logs
+*.log
+
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

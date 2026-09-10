@@ -32,7 +32,6 @@ data class AppSettings(
     val vibrationEnabled: Boolean = true,
     val animationEnabled: Boolean = true,
     val celebrationEnabled: Boolean = true,
-    val voiceEnabled: Boolean = true,
     val fontSize: Int = 16,
     val language: AppLanguage = AppLanguage.KURDISH
 )
